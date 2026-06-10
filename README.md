@@ -5,11 +5,10 @@
 ---
 
 ## 1. Arsitektur Komponen Berkas Sistem
-.Sistem ini diimplementasikan menggunakan tepat tiga berkas Python utama ditambah satu berkas otomatisasi pengujian beban :
+.Sistem ini diimplementasikan menggunakan tepat tiga berkas Python utama:
 * .**`webserver.py`**: Beroperasi pada port 8000 (TCP untuk HTTP) dan port 9000 (UDP untuk Echo). .Berkas ini berfungsi melayani permintaan berkas HTML statis, menangani kode galat standar (404 Not Found dan 500 Internal Server Error), mencatat log aktivitas secara rinci, serta menerapkan model *multithreading* untuk menangani beberapa koneksi simultan.
 * .**`proxy.py`**: Beroperasi pada port 8080 (TCP) sebagai perantara tunggal (*gateway*) antara klien dan server .Berkas ini menjalankan mekanisme *caching* wajib untuk menyimpan respons HTTP secara lokal ke dalam direktori `cache/` berdasarkan jalur URL, mencatat log status Cache HIT atau MISS, serta menangani galat propagasi seperti 502 Bad Gateway dan 504 Gateway Timeout.
-* .**`client.py`**: Berfungsi sebagai alat pengujian fungsionalitas ganda.*Mode TCP* digunakan untuk mengirimkan permintaan HTTP GET ke Proxy Server lalu menampilkan teks HTML mentah pada terminal.*Mode UDP* digunakan khusus untuk melakukan pengujian performa kualitas jaringan (QoS) dengan mengirimkan minimal 10 paket proaktif terstruktur langsung ke Web Server dengan batas waktu tunggu (*timeout*) maksimal 1 detik per paket.
-* .**`multi_client.py`**: Skrip otomatisasi pengujian beban (*stress testing*) yang memanfaatkan modul `subprocess` untuk meluncurkan 5 *instance* klien secara simultan dalam hitungan milidetik guna memvalidasi keandalan model *thread-per-connection* pada server dan proxy .
+* .**`client.py`**: Berfungsi sebagai alat pengujian fungsionalitas ganda.*Mode TCP* digunakan untuk mengirimkan permintaan HTTP GET ke Proxy Server lalu menampilkan teks HTML mentah pada terminal.*Mode UDP* digunakan khusus untuk melakukan pengujian performa kualitas jaringan (QoS) dengan mengirimkan minimal 10 paket proaktif terstruktur langsung ke Web Server dengan batas waktu tunggu (*timeout*) maksimal 1 detik per paket.*Mode Multi Client* digunakan untuk meluncurkan 5 *instance* klien TCP secara simultan guna memvalidasi keandalan model *thread-per-connection* pada server dan proxy .
 
 ---
 
@@ -17,7 +16,7 @@
 
 ### Langkah 2.1: Menyiapkan Workspace Proyek
 1. .Buka aplikasi **VS Code** pada perangkat komputer Anda.
-2. .Pilih menu `File` > `Open Folder...`, lalu arahkan ke direktori proyek tempat empat berkas Python di atas dan aset berkas `index.html` diletakkan dalam satu folder root yang sama.
+2. .Pilih menu `File` > `Open Folder...`, lalu arahkan ke direktori proyek tempat tiga berkas Python di atas dan aset berkas `index.html` diletakkan dalam satu folder root yang sama.
 3. Buka terminal terintegrasi dengan menekan kombinasi tombol `Ctrl + \`` atau melalui menu `Terminal` > `New Terminal`.
 
 ### Langkah 2.2: Mengonfigurasi Pembagian Panel Terminal (Split Terminal)
@@ -51,4 +50,6 @@ Karena komponen server dan proxy berjalan secara persisten menggunakan kalang ta
 ### Skenario A: Verifikasi Mekanisme TCP Caching (HIT vs MISS)
 1. .Pada Terminal 3, jalankan pengujian TCP klien untuk pertama kalinya:
    ```bash
-   python client.py -mode tcp
+   python client.py
+   ```
+   Lalu pilih opsi `1` untuk menjalankan TCP.

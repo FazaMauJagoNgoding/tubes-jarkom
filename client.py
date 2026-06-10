@@ -1,14 +1,18 @@
 import csv
+import os
 import socket
+import subprocess
 import sys
 import time
 import statistics
 
 # Konfigurasi Jaringan
-PROXY_IP = '10.130.66.43'  # Masukin IP Kamu Disi yang Sebagai Proxy Lewat Ipconfig
+# Gunakan 127.0.0.1 jika client, proxy, dan webserver dijalankan di laptop yang sama.
+# Jika memakai beberapa laptop, ganti IP ini ke IP laptop proxy/server pada jaringan yang sama.
+PROXY_IP = '127.0.0.1'
 PROXY_PORT = 8085
 # PROXY_UDP_PORT = 9090
-SERVER_IP = '10.130.65.12'  # IP Web Server 
+SERVER_IP = '127.0.0.1'
 SERVER_UDP_PORT = 9000
 
 def run_tcp_mode():
@@ -135,16 +139,47 @@ def run_udp_mode():
     except Exception as e:
         print(f"[!] GAGAL: Tidak dapat menyimpan file CSV. Error: {e}")
 
-if __name__ == '__main__':
-    # Memilih mode berdasarkan argumen command line
-    if len(sys.argv) < 3 or sys.argv[1] != '-mode':
-        print("Penggunaan: python client.py -mode tcp ATAU python client.py -mode udp")
-        sys.exit(1)
+def run_multi_client_mode(num_clients=5):
+    """Menjalankan beberapa client TCP secara bersamaan untuk stress testing."""
+    print(f"[*] Menjalankan {num_clients} Client TCP secara bersamaan...")
+    processes = []
+    start_time = time.time()
+    client_script = os.path.abspath(__file__)
 
-    mode = sys.argv[2].lower()
-    if mode == 'tcp':
+    for i in range(num_clients):
+        print(f" -> Spawn Client-{i+1}")
+        p = subprocess.Popen([sys.executable, client_script, "tcp"])
+        processes.append(p)
+
+    for p in processes:
+        p.wait()
+
+    end_time = time.time()
+    print(f"\n[*] Semua {num_clients} client selesai dieksekusi dalam {(end_time - start_time):.2f} detik.")
+
+def show_menu():
+    print("=== MENU CLIENT ===")
+    print("1. TCP")
+    print("2. UDP")
+    print("3. Multi Client")
+    print("===================")
+
+def run_selected_option(option):
+    option = option.strip().lower()
+
+    if option in ("1", "tcp"):
         run_tcp_mode()
-    elif mode == 'udp':
+    elif option in ("2", "udp"):
         run_udp_mode()
+    elif option in ("3", "multi", "multi-client", "multi_client"):
+        run_multi_client_mode()
     else:
-        print("Error: Mode tidak dikenali. Gunakan 'tcp' atau 'udp'.")
+        print("Error: Opsi tidak dikenali. Pilih 1/TCP, 2/UDP, atau 3/Multi Client.")
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        run_selected_option(sys.argv[1])
+    else:
+        show_menu()
+        selected_option = input("Pilih opsi (1/2/3): ")
+        run_selected_option(selected_option)

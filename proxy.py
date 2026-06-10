@@ -10,7 +10,9 @@ HOST = '0.0.0.0'  # Proxy akan mendengarkan pada semua interface
 PROXY_PORT = 8085      # Port tempat Proxy berjalan
 
 # SERVER
-SERVER_IP = '10.130.65.12'  # IP Web Server tujuan
+# Gunakan 127.0.0.1 jika proxy dan webserver dijalankan di laptop yang sama.
+# Jika webserver berada di laptop lain, ganti ke IP laptop webserver pada jaringan yang sama.
+SERVER_IP = '127.0.0.1'
 SERVER_PORT = 8000
 SERVER_UDP_PORT = 9000       # Port tujuan (Web Server)
 CACHE_DIR = 'cache'

@@ -1,0 +1,7 @@
+Metrik QoS,Nilai,Satuan
+Min RTT,0.05,ms
+Avg RTT,0.29,ms
+Max RTT,1.75,ms
+Packet Loss,0.00,%
+Jitter,0.53,ms
+Throughput,507.50,kbps
