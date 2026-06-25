@@ -9,10 +9,10 @@ import statistics
 # Konfigurasi Jaringan
 # Gunakan 127.0.0.1 jika client, proxy, dan webserver dijalankan di laptop yang sama.
 # Jika memakai beberapa laptop, ganti IP ini ke IP laptop proxy/server pada jaringan yang sama.
-PROXY_IP = '127.0.0.1'
+PROXY_IP = '172.20.10.3'
 PROXY_PORT = 8085
 # PROXY_UDP_PORT = 9090
-SERVER_IP = '127.0.0.1'
+SERVER_IP = '172.20.10.3'
 SERVER_UDP_PORT = 9000
 
 def run_tcp_mode():
